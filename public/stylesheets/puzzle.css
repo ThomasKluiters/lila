@@ -102,6 +102,13 @@ body.dark #puzzle .feedback {
 #puzzle .feedback.after .complete.win {
   align-items: flex-start;
 }
+#puzzle .feedback.after .favourite {
+  display: flex;
+  flex-flow: column;
+  margin: 0 20px;
+  align-items: center;
+  justify-content: center;
+}
 #puzzle .feedback.after .vote {
   display: flex;
   flex-flow: column;

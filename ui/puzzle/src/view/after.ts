@@ -1,8 +1,19 @@
 import { h } from 'snabbdom';
 import { bind, dataIcon } from '../util';
 
+function renderFavourite(ctrl) {
+  const data = ctrl.getData();
+  if (!data.puzzle.enabled) return;
+  return h('div.favourite', {
+    attrs: {
+      'data-icon': ""
+    },
+    hook: bind('click', () => ctrl.favourite())
+  });
+}
+
 function renderVote(ctrl) {
-  var data = ctrl.getData();
+  const data = ctrl.getData();
   if (!data.puzzle.enabled) return;
   return h('div.vote', [
     h('a', {
@@ -45,6 +56,7 @@ export default function(ctrl) {
         h('div.icon', '✓'),
         h('div.instruction', ctrl.trans.noarg('success'))
       ])) : h('div.complete', 'Puzzle complete!'),
+      data.user ? renderFavourite(ctrl) : null,
       data.user ? renderVote(ctrl) : null
     ]),
     h('a.half.continue', {
