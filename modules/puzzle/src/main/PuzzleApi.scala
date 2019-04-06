@@ -23,15 +23,7 @@ private[puzzle] final class PuzzleApi(
   object puzzle {
 
     def find(id: PuzzleId): Fu[Option[Puzzle]] =
-      //      puzzleColl.find($doc(F.id -> id)).uno[Puzzle]
-      fuccess(Some(Puzzle.make(
-        "KfUwSKd4",
-        List("d2d4"),
-        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-        chess.Black,
-        List(Win("d7d5")),
-        false
-      )(1)))
+      puzzleColl.find($doc(F.id -> id)).uno[Puzzle]
 
     def findMany(ids: List[PuzzleId]): Fu[List[Option[Puzzle]]] =
       puzzleColl.optionsByOrderedIds[Puzzle, PuzzleId](ids)(_.id)
@@ -70,6 +62,23 @@ private[puzzle] final class PuzzleApi(
     def reset(user: User) = roundColl.remove($doc(
       Round.BSONFields.id $startsWith s"${user.id}:"
     ))
+  }
+
+  object favourite {
+
+    def update(id: PuzzleId, user: User) =
+      puzzleColl.update(
+        $id(id),
+        $addToSet("favourites" -> user.id)
+      )
+
+  }
+
+  object favourites {
+
+    def find(user: User): Fu[List[Puzzle]] =
+      puzzleColl.find($doc("favourites" -> user.id)).list[Puzzle](10)
+
   }
 
   object vote {

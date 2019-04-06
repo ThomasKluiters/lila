@@ -2,13 +2,14 @@ package controllers
 
 import play.api.libs.json._
 import play.api.mvc._
-
 import lila.api.Context
 import lila.app._
 import lila.game.PgnDump
-import lila.puzzle.{ PuzzleId, Result, Puzzle => PuzzleModel, UserInfos }
+import lila.puzzle.{ PuzzleId, Result, UserInfos, Puzzle => PuzzleModel }
 import lila.user.UserRepo
 import views._
+
+import scala.concurrent.Future
 
 object Puzzle extends LilaController {
 
@@ -161,6 +162,24 @@ object Puzzle extends LilaController {
           }
         ) map (_ as JSON)
       }
+    }
+  }
+
+  def favourite(id: PuzzleId) = AuthBody { implicit ctx => me =>
+    NoBot {
+      env.api.favourite.update(id, me) map { _ =>
+        Ok(Json.arr())
+      } map (_ as JSON)
+    }
+  }
+
+  def favourites = Auth { implicit ctx => me =>
+    NoBot {
+      env.api.favourites.find(me) flatMap { puzzles =>
+        Future.sequence(puzzles map puzzleJson) map { json =>
+          Ok(Json.arr(json))
+        }
+      } map (_ as JSON)
     }
   }
 
