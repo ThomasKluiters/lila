@@ -415,6 +415,13 @@ export default function(opts, redraw: () => void): Controller {
 
   const callToVote = () => parseInt(nbToVoteCall()) < 1;
 
+  const favourite = throttle(1000, function () {
+    xhr.favourite(data.puzzle.id).then(function () {
+      data.puzzle.favourite = true;
+      redraw();
+    });
+  });
+
   const vote = throttle(1000, function(v) {
     if (callToVote()) thanksUntil = Date.now() + 2000;
     nbToVoteCall(5);
@@ -469,6 +476,7 @@ export default function(opts, redraw: () => void): Controller {
     thanks() {
       return !!thanksUntil && Date.now() < thanksUntil;
     },
+    favourite,
     vote,
     getCeval,
     pref: opts.pref,

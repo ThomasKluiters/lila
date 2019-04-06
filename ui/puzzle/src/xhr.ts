@@ -18,6 +18,12 @@ export function vote(puzzleId, v) {
     }
   });
 }
+export function favourite(puzzleId) {
+  return $.ajax({
+    method: 'POST',
+    url: '/training/' + puzzleId + '/favourite',
+  })
+}
 export function nextPuzzle() {
   return $.ajax({
     url: '/training/new'
