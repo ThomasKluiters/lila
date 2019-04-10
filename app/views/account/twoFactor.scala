@@ -50,6 +50,10 @@ object twoFactor {
           "Two-factor authentication enabled"
         ),
         p(cls := "explanation")("Your account is protected with two-factor authentication."),
+        st.form(cls := "form3")(
+          form3.input(form(""), "text"),
+          form3.actionHtml(form3.submit(raw("Generate new codes"), icon = None))
+        ),
         st.form(cls := "form3", action := routes.Account.disableTwoFactor, method := "POST")(
           p(cls := "explanation")("You need your password and an authentication code from your authenticator app to disable two-factor authentication."),
           form3.password(form("passwd"), trans.password.frag()),
